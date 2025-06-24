@@ -1,3 +1,4 @@
+//script.ts
 // Define o padrão de movimento (ciclo de 24 horas)
 const movimentos: [number, number][] = [
   [1, 2],
