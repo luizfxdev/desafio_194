@@ -1,6 +1,6 @@
 //script.ts
 // Define o padrão de movimento (ciclo de 24 horas)
-const movimentos: [number, number][] = [
+const movements: [number, number][] = [
   [1, 2],
   [-1, -2],
   [3, 1],
@@ -27,71 +27,72 @@ const movimentos: [number, number][] = [
   [2, 2]
 ];
 
-// Elementos DOM
-const inputHoras = document.getElementById('hours') as HTMLInputElement;
-const botaoCalcular = document.getElementById('calculate-btn') as HTMLButtonElement;
-const botaoResetar = document.getElementById('reset-btn') as HTMLButtonElement;
-const resultadoDiv = document.getElementById('result') as HTMLDivElement;
-const passosCalculoDiv = document.getElementById('calculation-steps') as HTMLDivElement;
-const displayMovimentos = document.getElementById('movements-display') as HTMLDivElement;
+// Elementos do DOM
+const hoursInput = document.getElementById('hours') as HTMLInputElement;
+const calculateBtn = document.getElementById('calculate-btn') as HTMLButtonElement;
+const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+const resultDiv = document.getElementById('result') as HTMLDivElement;
+const calculationStepsDiv = document.getElementById('calculation-steps') as HTMLDivElement;
+const movementsDisplay = document.getElementById('movements-display') as HTMLDivElement;
 
 // Exibe os movimentos na tela
-function exibirMovimentos() {
-  displayMovimentos.innerHTML = '';
-  movimentos.forEach((movimento, indice) => {
-    const elementoMovimento = document.createElement('div');
-    elementoMovimento.className = 'movement-item';
-    elementoMovimento.textContent = `H${indice}: (${movimento[0]}, ${movimento[1]})`;
-    displayMovimentos.appendChild(elementoMovimento);
+function displayMovements() {
+  movementsDisplay.innerHTML = '';
+  movements.forEach((movement, index) => {
+    const movementElement = document.createElement('div');
+    movementElement.className = 'movement-item';
+    movementElement.textContent = `H${index}: (${movement[0]}, ${movement[1]})`;
+    movementsDisplay.appendChild(movementElement);
   });
 }
 
 // Calcula a posição do astro após as horas especificadas
-function calcularPosicao(horas: number): [number, number] {
+function calculatePosition(hours: number): [number, number] {
   let x = 0;
   let y = 0;
-  let passos = `<div class="step">Posição inicial: (0, 0)</div>`;
+  let steps = `<div class="step">Posição inicial: (0, 0)</div>`;
 
-  for (let i = 0; i < horas; i++) {
-    const indiceCiclo = i % 24;
-    const [dx, dy] = movimentos[indiceCiclo];
+  for (let i = 0; i < hours; i++) {
+    const cycleIndex = i % 24; // Ciclo se reinicia a cada 24 horas
+    const [dx, dy] = movements[cycleIndex];
     x += dx;
     y += dy;
-    passos += `<div class="step">Hora ${i + 1}: Movimento (${dx}, ${dy}) → Nova posição: (${x}, ${y})</div>`;
+    steps += `<div class="step">Hora ${i + 1}: Movimento (${dx}, ${dy}) → Nova posição: (${x}, ${y})</div>`;
   }
 
-  passosCalculoDiv.innerHTML = passos;
+  calculationStepsDiv.innerHTML = steps;
   return [x, y];
 }
 
-// Manipula o clique no botão Calcular
-botaoCalcular.addEventListener('click', () => {
-  const horas = parseInt(inputHoras.value);
+// Manipula o clique no botão "Calcular"
+calculateBtn.addEventListener('click', () => {
+  const hours = parseInt(hoursInput.value);
 
-  if (isNaN(horas)) {
-    // Corrigido: parêntese fechado corretamente
-    resultadoDiv.textContent = 'Por favor, insira um número válido de horas';
-    passosCalculoDiv.innerHTML = '';
+  if (isNaN(hours)) {
+    // Validação para entrada não numérica
+    resultDiv.textContent = 'Por favor, insira um número válido de horas.';
+    calculationStepsDiv.innerHTML = '';
     return;
   }
 
-  if (horas < 0) {
-    resultadoDiv.textContent = 'O número de horas não pode ser negativo';
-    passosCalculoDiv.innerHTML = '';
+  if (hours < 0) {
+    // Validação para entrada negativa
+    resultDiv.textContent = 'O número de horas não pode ser negativo.';
+    calculationStepsDiv.innerHTML = '';
     return;
   }
 
-  const [x, y] = calcularPosicao(horas);
-  resultadoDiv.textContent = `Posição final após ${horas} horas: (${x}, ${y})`;
+  const [x, y] = calculatePosition(hours);
+  resultDiv.textContent = `Posição final após ${hours} horas: (${x}, ${y})`;
 });
 
-// Manipula o clique no botão Resetar
-botaoResetar.addEventListener('click', () => {
-  inputHoras.value = '';
-  resultadoDiv.textContent = 'Aguardando cálculo...';
-  passosCalculoDiv.innerHTML = '';
+// Manipula o clique no botão "Resetar"
+resetBtn.addEventListener('click', () => {
+  hoursInput.value = '';
+  resultDiv.textContent = 'Aguardando cálculo...';
+  calculationStepsDiv.innerHTML = '';
 });
 
-// Inicializa a aplicação
-exibirMovimentos();
-resultadoDiv.textContent = 'Aguardando cálculo...';
+// Inicializa a visualização dos movimentos e define o texto inicial
+displayMovements();
+resultDiv.textContent = 'Aguardando cálculo...';
